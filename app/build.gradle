@@ -1,0 +1,79 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlinx-serialization'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'kotlin-android-extensions'
+
+android {
+    compileSdkVersion Dependencies.compileSdkVersion
+
+    defaultConfig {
+        applicationId Dependencies.applicationId
+        minSdkVersion Dependencies.minSdkVersion
+        targetSdkVersion Dependencies.targetSdkVersion
+        versionCode Dependencies.versionCode
+        versionName Dependencies.versionName
+        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                includeCompileClasspath false
+            }
+        }
+    }
+
+    buildFeatures {
+        viewBinding true
+        dataBinding true
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation Libs.kotlin_std
+    implementation Libs.kotlin_reflect
+    implementation Libs.appcompat
+    implementation Libs.recyclerView
+    implementation Libs.constraint_layout
+
+    // Network
+    implementation Square.rxadapter
+    implementation Square.okhttp
+    implementation Square.okhttp_intercepter
+    implementation Square.picasso
+
+    // RxJava
+    implementation Reactive.rxJava2
+    implementation Reactive.rxAndroid
+
+    // Log
+    implementation Square.timber
+
+    // Koin
+    implementation Di.koinAndroid
+
+    // Serialization
+    implementation Libs.serialization_json
+
+    // Spotify
+    implementation Spotify.spotify
+
+    //Test
+    testImplementation TestLibs.junit
+    androidTestImplementation TestLibs.runner
+    testImplementation TestLibs.mockito
+    testImplementation TestLibs.mockito_kotlin
+    androidTestImplementation TestLibs.espresso
+}
