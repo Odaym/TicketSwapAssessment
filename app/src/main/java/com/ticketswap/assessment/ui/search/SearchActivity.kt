@@ -1,12 +1,14 @@
-package com.ticketswap.assessment
+package com.ticketswap.assessment.ui.search
 
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ticketswap.assessment.base.BaseActivity
 import com.ticketswap.assessment.databinding.ActivitySearchBinding
-import com.ticketswap.assessment.util.LoadArtists
+import com.ticketswap.assessment.ui.artist.ArtistDetailActivity
+import com.ticketswap.assessment.util.OpenArtistDetailScreen
 import com.ticketswap.assessment.util.ViewModelCommand
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -15,39 +17,47 @@ class SearchActivity : BaseActivity<SearchViewModel>() {
     override val viewModel by viewModel<SearchViewModel>()
     private lateinit var binding: ActivitySearchBinding
 
-    lateinit var adapter: RecyclerAdapter
+    private val adapter by lazy { RecyclerAdapter(viewModel::onListItemClicked) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySearchBinding.inflate(layoutInflater)
+        binding.lifecycleOwner = this
+        binding.viewModel = viewModel
         setContentView(binding.root)
 
         viewModel.isRefreshing.observe(this, {
-            binding.swiperefreshLayout.isRefreshing = it == true
+            binding.swipeRefreshLayout.isRefreshing = it == true
         })
 
-        binding.swiperefreshLayout.setOnRefreshListener {
-            viewModel.searchButtonClicked(binding.searchInput.text.toString())
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            viewModel.search()
         }
 
-        binding.buttonSearch.setOnClickListener {
-            viewModel.searchButtonClicked(binding.searchInput.text.toString())
-        }
+        binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                viewModel.onSearchQueryChanged(newText ?: "")
+                return true
+            }
+        })
 
         setupRecycler()
     }
 
     override fun handleViewModelCommand(command: ViewModelCommand) = when (command) {
-        is LoadArtists -> {
-            adapter.items = command.artists
-            adapter.notifyDataSetChanged()
+        is OpenArtistDetailScreen -> {
+            ArtistDetailActivity.start(this, command.artist)
             true
         }
         else -> super.handleViewModelCommand(command)
     }
 
-    private fun setupRecycler(){
-        adapter = RecyclerAdapter()
+    private fun setupRecycler() {
+        viewModel.listItems.observe(this, adapter)
         binding.recycler.adapter = adapter
         binding.recycler.layoutManager = LinearLayoutManager(this)
     }

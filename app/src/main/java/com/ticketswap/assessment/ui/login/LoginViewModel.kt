@@ -1,7 +1,8 @@
-package com.ticketswap.assessment
+package com.ticketswap.assessment.ui.login
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.ticketswap.assessment.PrefStore
 import com.ticketswap.assessment.base.BaseViewModel
 import com.ticketswap.assessment.util.CloseScreen
 import com.ticketswap.assessment.util.NetworkAvailabilityChecker

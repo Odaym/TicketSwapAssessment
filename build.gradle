@@ -1,13 +1,19 @@
 buildscript {
+    ext {
+        kotlin_version = "1.5.21"
+        android_material = "1.4.0"
+    }
+
     repositories {
         google()
         mavenCentral()
         jcenter()
     }
+
     dependencies {
-        classpath Dependencies.androidGradle
-        classpath Dependencies.kotlinGradlePlugin
-        classpath Dependencies.kotlinSerialization
+        classpath 'com.android.tools.build:gradle:4.2.2'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "org.jetbrains.kotlin:kotlin-serialization:$kotlin_version"
 
     }
 }

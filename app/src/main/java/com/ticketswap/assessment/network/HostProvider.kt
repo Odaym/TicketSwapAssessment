@@ -1,6 +1,6 @@
 package com.ticketswap.assessment.network
 
-interface HostProvider {
-    val scheme: String
-    val host: String
+class HostProvider {
+    val scheme: String = "https"
+    val host: String = "api.spotify.com"
 }

@@ -8,7 +8,7 @@ class CacheInterceptor : Interceptor {
     } catch (e: Exception) {
         val offlineRequest = chain.request()
             .newBuilder()
-            .header("Cache-Control", "public, only-if-cached," + "max-stale=" + 60 * 60)
+            .header("Cache-Control", "public, only-if-cached," + "max-stale=" + (60 * 60))
             .build()
         chain.proceed(offlineRequest)
     }

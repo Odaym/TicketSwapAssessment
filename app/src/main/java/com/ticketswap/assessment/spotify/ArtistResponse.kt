@@ -1,5 +1,7 @@
 package com.ticketswap.assessment.spotify
 
+import android.os.Parcel
+import android.os.Parcelable
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -21,7 +23,33 @@ class Image(
     val height: Int,
     val url: String,
     val width: Int
-)
+) : Parcelable {
+    constructor(parcel: Parcel) : this(
+        parcel.readInt(),
+        parcel.readString()!!,
+        parcel.readInt()
+    )
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeInt(height)
+        parcel.writeString(url)
+        parcel.writeInt(width)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<Image> {
+        override fun createFromParcel(parcel: Parcel): Image {
+            return Image(parcel)
+        }
+
+        override fun newArray(size: Int): Array<Image?> {
+            return arrayOfNulls(size)
+        }
+    }
+}
 
 @Serializable
 class Followers(
@@ -32,4 +60,24 @@ class Followers(
 @Serializable
 class ExternalUrls(
     val spotify: String
-)
+) : Parcelable {
+    constructor(parcel: Parcel) : this(parcel.readString()!!)
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(spotify)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<ExternalUrls> {
+        override fun createFromParcel(parcel: Parcel): ExternalUrls {
+            return ExternalUrls(parcel)
+        }
+
+        override fun newArray(size: Int): Array<ExternalUrls?> {
+            return arrayOfNulls(size)
+        }
+    }
+}

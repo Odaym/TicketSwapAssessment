@@ -2,24 +2,17 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlinx-serialization'
 apply plugin: 'kotlin-kapt'
-apply plugin: 'kotlin-android-extensions'
 
 android {
-    compileSdkVersion Dependencies.compileSdkVersion
+    compileSdkVersion 30
 
     defaultConfig {
-        applicationId Dependencies.applicationId
-        minSdkVersion Dependencies.minSdkVersion
-        targetSdkVersion Dependencies.targetSdkVersion
-        versionCode Dependencies.versionCode
-        versionName Dependencies.versionName
+        applicationId "com.ticketswap.assessment"
+        minSdkVersion 23
+        targetSdkVersion 30
+        versionCode 1
+        versionName "1.0"
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
-
-        javaCompileOptions {
-            annotationProcessorOptions {
-                includeCompileClasspath false
-            }
-        }
     }
 
     buildFeatures {
@@ -42,38 +35,37 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation Libs.kotlin_std
-    implementation Libs.kotlin_reflect
-    implementation Libs.appcompat
-    implementation Libs.recyclerView
-    implementation Libs.constraint_layout
-
-    // Network
-    implementation Square.rxadapter
-    implementation Square.okhttp
-    implementation Square.okhttp_intercepter
-    implementation Square.picasso
-
-    // RxJava
-    implementation Reactive.rxJava2
-    implementation Reactive.rxAndroid
-
-    // Log
-    implementation Square.timber
-
-    // Koin
-    implementation Di.koinAndroid
-
-    // Serialization
-    implementation Libs.serialization_json
-
-    // Spotify
-    implementation Spotify.spotify
 
     //Test
-    testImplementation TestLibs.junit
-    androidTestImplementation TestLibs.runner
-    testImplementation TestLibs.mockito
-    testImplementation TestLibs.mockito_kotlin
-    androidTestImplementation TestLibs.espresso
+    testImplementation "junit:junit:4.13.2"
+    testImplementation "org.mockito:mockito-core:3.8.0"
+    testImplementation "com.nhaarman:mockito-kotlin:1.5.0"
+    androidTestImplementation "com.android.support.test:runner:1.0.2"
+    androidTestImplementation "com.android.support.test.espresso:espresso-core:3.0.2"
+
+    implementation "com.google.android.material:material:$android_material"
+    implementation "androidx.recyclerview:recyclerview:1.2.1"
+    implementation "androidx.constraintlayout:constraintlayout:2.1.0"
+
+    // Square
+    implementation "com.squareup.picasso:picasso:2.71828"
+    implementation "com.jakewharton.retrofit:retrofit2-rxjava2-adapter:1.0.0"
+    implementation "com.squareup.okhttp3:okhttp:4.9.0"
+    implementation "com.squareup.okhttp3:logging-interceptor:4.9.0"
+
+    // RxJava
+    implementation "io.reactivex.rxjava2:rxjava:2.2.19"
+    implementation "io.reactivex.rxjava2:rxandroid:2.1.1"
+
+    // Timber
+    implementation "com.jakewharton.timber:timber:4.7.1"
+
+    // Koin
+    implementation "io.insert-koin:koin-android:3.1.2"
+
+    // Serialization
+    implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.2"
+
+    // Spotify
+    implementation "com.spotify.android:auth:1.1.0"
 }

@@ -1,4 +1,4 @@
-package com.ticketswap.assessment
+package com.ticketswap.assessment.ui.login
 
 import android.content.Intent
 import android.net.Uri
@@ -7,12 +7,14 @@ import android.widget.Toast
 import com.spotify.sdk.android.authentication.AuthenticationClient
 import com.spotify.sdk.android.authentication.AuthenticationRequest
 import com.spotify.sdk.android.authentication.AuthenticationResponse
+import com.ticketswap.assessment.PrefStore
+import com.ticketswap.assessment.R
 import com.ticketswap.assessment.base.BaseActivity
 import com.ticketswap.assessment.databinding.ActivityLoginBinding
+import com.ticketswap.assessment.ui.search.SearchActivity
 import com.ticketswap.assessment.util.OpenSearchScreen
 import com.ticketswap.assessment.util.ViewModelCommand
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import timber.log.Timber
 
 class LoginActivity : BaseActivity<LoginViewModel>() {
 
@@ -27,12 +29,10 @@ class LoginActivity : BaseActivity<LoginViewModel>() {
         setContentView(binding.root)
 
         binding.buttonLogin.setOnClickListener {
-            viewModel.loginButtonClicked()
+            loginWithSpotify()
         }
 
-        viewModel.isConnected.observe(this, {
-            loginWithSpotify()
-        })
+        loginWithSpotify()
 
         prefStore = PrefStore(this)
     }
@@ -50,6 +50,7 @@ class LoginActivity : BaseActivity<LoginViewModel>() {
         val response = AuthenticationClient.getResponse(resultCode, data)
 
         if (response.type == AuthenticationResponse.Type.ERROR) {
+            // TODO show error dialog
             Toast.makeText(
                 this,
                 "Error: ${response.error}",
@@ -57,7 +58,6 @@ class LoginActivity : BaseActivity<LoginViewModel>() {
             )
                 .show()
         } else {
-            Timber.d("Spotify AccessToken is ${response.accessToken} ")
             viewModel.authTokenReceived(response.accessToken)
         }
     }
@@ -74,7 +74,6 @@ class LoginActivity : BaseActivity<LoginViewModel>() {
             )
                 .setShowDialog(true)
                 .setScopes(arrayOf("user-read-email"))
-                .setCampaign("your-campaign-token")
                 .build()
         )
     }

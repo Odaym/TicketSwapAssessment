@@ -1,6 +1,5 @@
 package com.ticketswap.assessment.network
 
-import android.util.Log
 import io.reactivex.Single
 import io.reactivex.SingleEmitter
 import io.reactivex.exceptions.CompositeException
@@ -75,7 +74,7 @@ class NetworkRequestProcessor(
             }
 
             override fun onResponse(call: Call, response: Response) {
-//                if (isDisposed()) return
+                if (isDisposed()) return
 
                 if (response.isSuccessful) {
                     try {
@@ -87,8 +86,7 @@ class NetworkRequestProcessor(
                         }
                     }
                 } else {
-//                    onError(errorBodyConverter.convert(response) ?: Throwable(response.message))
-                    Log.d("HTTP_ERROR", response.message)
+                    onError(Throwable(response.message))
                 }
             }
         })

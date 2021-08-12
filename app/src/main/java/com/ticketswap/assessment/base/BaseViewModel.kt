@@ -1,6 +1,7 @@
 package com.ticketswap.assessment.base
 
 import androidx.lifecycle.ViewModel
+import com.ticketswap.assessment.util.CloseScreen
 import com.ticketswap.assessment.util.ViewModelCommand
 import io.reactivex.Observable
 import io.reactivex.Single
@@ -41,4 +42,6 @@ abstract class BaseViewModel : ViewModel() {
             .observeOn(uiScheduler)
             .subscribe(onSuccess, onError)
     }
+
+    fun onBackButtonClicked() = emitCommand(CloseScreen)
 }

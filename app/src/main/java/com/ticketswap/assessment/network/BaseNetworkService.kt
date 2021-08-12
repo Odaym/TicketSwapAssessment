@@ -10,10 +10,6 @@ abstract class BaseNetworkService {
     abstract val hostProvider: HostProvider
     abstract val prefStore: PrefStore
 
-    companion object {
-        private val JSON_MIME = "application/json".toMediaTypeOrNull()
-    }
-
     fun get(path: String): NetworkRequestBuilder {
         return NetworkRequestBuilder(hostProvider.host, hostProvider.scheme)
             .withMethod(HttpMethod.GET)

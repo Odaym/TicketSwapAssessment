@@ -2,18 +2,16 @@ package com.ticketswap.assessment.di
 
 import com.ticketswap.assessment.App.Companion.appInstance
 import com.ticketswap.assessment.BuildConfig
-import com.ticketswap.assessment.LoginViewModel
 import com.ticketswap.assessment.PrefStore
-import com.ticketswap.assessment.SearchViewModel
 import com.ticketswap.assessment.network.CacheInterceptor
-import com.ticketswap.assessment.network.EnvironmentStore
 import com.ticketswap.assessment.network.HostProvider
 import com.ticketswap.assessment.network.NetworkRequestProcessor
 import com.ticketswap.assessment.service.ApiService
+import com.ticketswap.assessment.ui.artist.ArtistDetailViewModel
+import com.ticketswap.assessment.ui.login.LoginViewModel
+import com.ticketswap.assessment.ui.search.SearchViewModel
 import com.ticketswap.assessment.util.NetworkAvailabilityChecker
 import com.ticketswap.assessment.util.NetworkAvailabilityCheckerImpl
-import com.ticketswap.assessment.util.ResourcesProvider
-import com.ticketswap.assessment.util.ResourcesProviderImpl
 import kotlinx.serialization.json.Json
 import okhttp3.Cache
 import okhttp3.OkHttpClient
@@ -41,10 +39,6 @@ val application = module {
     single {
         json
     }
-
-    single<ResourcesProvider> {
-        ResourcesProviderImpl(get())
-    }
 }
 
 val network = module {
@@ -53,8 +47,8 @@ val network = module {
         NetworkAvailabilityCheckerImpl(get())
     }
 
-    single<HostProvider> {
-        EnvironmentStore()
+    single {
+        HostProvider()
     }
 
     factory {
@@ -92,10 +86,20 @@ val network = module {
 
 val viewModels = module {
     viewModel {
-        LoginViewModel(prefStore = get())
+        LoginViewModel(
+            prefStore = get(),
+            networkChecker = get()
+        )
     }
 
     viewModel {
-        SearchViewModel(apiService = get())
+        SearchViewModel(
+            apiService = get(),
+            networkChecker = get()
+        )
+    }
+
+    viewModel {
+        ArtistDetailViewModel()
     }
 }

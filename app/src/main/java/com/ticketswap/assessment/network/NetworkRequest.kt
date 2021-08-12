@@ -27,7 +27,6 @@ class NetworkRequestBuilder(
         get() = HttpUrl.Builder()
             .host(host)
             .scheme(scheme)
-            .addEncodedPathSegment("v1")
             .encodedPath(if (path.startsWith("/")) path else "/$path")
             .apply { params?.forEach { addQueryParameter(it.name, it.value?.toString()) } }
             .build()

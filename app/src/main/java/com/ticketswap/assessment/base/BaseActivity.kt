@@ -16,13 +16,13 @@ import timber.log.Timber
 abstract class BaseActivity<VM : BaseViewModel> : AppCompatActivity() {
     val prefs: SharedPreferences by inject()
 
-    private lateinit var viewModelCommandsSubscription: Disposable
+    private lateinit var vmCommandsSubscription: Disposable
 
     protected abstract val viewModel: VM
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModelCommandsSubscription = viewModel
+        vmCommandsSubscription = viewModel
             .commands
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { handleViewModelCommand(it) }
@@ -32,7 +32,7 @@ abstract class BaseActivity<VM : BaseViewModel> : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        viewModelCommandsSubscription.dispose()
+        vmCommandsSubscription.dispose()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

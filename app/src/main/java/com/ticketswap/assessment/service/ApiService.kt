@@ -15,7 +15,7 @@ class ApiService(
 ) : BaseNetworkService() {
 
     fun getArtist(id: String): Single<ArtistResponse> {
-        return get("v1/artists/$id")
+        return get("/artists/$id")
             .asSingle(ArtistResponse.serializer())
     }
 
