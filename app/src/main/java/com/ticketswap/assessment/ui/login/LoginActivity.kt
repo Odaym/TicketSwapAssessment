@@ -3,41 +3,37 @@ package com.ticketswap.assessment.ui.login
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.widget.Toast
 import com.spotify.sdk.android.authentication.AuthenticationClient
 import com.spotify.sdk.android.authentication.AuthenticationRequest
 import com.spotify.sdk.android.authentication.AuthenticationResponse
-import com.ticketswap.assessment.PrefStore
 import com.ticketswap.assessment.R
 import com.ticketswap.assessment.base.BaseActivity
 import com.ticketswap.assessment.databinding.ActivityLoginBinding
+import com.ticketswap.assessment.ui.ErrorDialog
 import com.ticketswap.assessment.ui.search.SearchActivity
+import com.ticketswap.assessment.util.LoginWithSpotify
 import com.ticketswap.assessment.util.OpenSearchScreen
 import com.ticketswap.assessment.util.ViewModelCommand
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class LoginActivity : BaseActivity<LoginViewModel>() {
+class LoginActivity : BaseActivity<LoginViewModel>(), ErrorDialog.Listener {
 
     override val viewModel by viewModel<LoginViewModel>()
     private lateinit var binding: ActivityLoginBinding
 
-    private lateinit var prefStore: PrefStore
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
+        binding.lifecycleOwner = this
+        binding.viewModel = viewModel
         setContentView(binding.root)
-
-        binding.buttonLogin.setOnClickListener {
-            loginWithSpotify()
-        }
-
-        loginWithSpotify()
-
-        prefStore = PrefStore(this)
     }
 
     override fun handleViewModelCommand(command: ViewModelCommand) = when (command) {
+        is LoginWithSpotify -> {
+            loginWithSpotify()
+            true
+        }
         is OpenSearchScreen -> {
             SearchActivity.start(this)
             true
@@ -49,17 +45,15 @@ class LoginActivity : BaseActivity<LoginViewModel>() {
         super.onActivityResult(requestCode, resultCode, data)
         val response = AuthenticationClient.getResponse(resultCode, data)
 
-        if (response.type == AuthenticationResponse.Type.ERROR) {
-            // TODO show error dialog
-            Toast.makeText(
-                this,
-                "Error: ${response.error}",
-                Toast.LENGTH_LONG
-            )
-                .show()
-        } else {
-            viewModel.authTokenReceived(response.accessToken)
-        }
+        viewModel.spotifyResponseReceived(response)
+    }
+
+    override fun onRetryClicked() {
+        loginWithSpotify()
+    }
+
+    override fun onCancelClicked(dialog: ErrorDialog) {
+        finish()
     }
 
     private fun loginWithSpotify() {

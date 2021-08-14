@@ -8,7 +8,7 @@ import android.view.Menu
 import com.squareup.picasso.Picasso
 import com.ticketswap.assessment.base.BaseActivity
 import com.ticketswap.assessment.databinding.ActivityArtistDetailBinding
-import com.ticketswap.assessment.spotify.ArtistItem
+import com.ticketswap.assessment.responses.ArtistItem
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class ArtistDetailActivity : BaseActivity<ArtistDetailViewModel>() {

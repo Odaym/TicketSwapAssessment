@@ -43,15 +43,6 @@ class NetworkRequestProcessor(
         }
     }
 
-    private fun <T> throwError(error: Throwable, emitter: SingleEmitter<T>) {
-        try {
-            emitter.onError(error)
-        } catch (e: Exception) {
-            Exceptions.throwIfFatal(e)
-            RxJavaPlugins.onError(CompositeException(error, e))
-        }
-    }
-
     private fun NetworkRequest.callWithClient(client: OkHttpClient): Call {
         return client.newCall(
             Request.Builder()
@@ -90,5 +81,14 @@ class NetworkRequestProcessor(
                 }
             }
         })
+    }
+
+    private fun <T> throwError(error: Throwable, emitter: SingleEmitter<T>) {
+        try {
+            emitter.onError(error)
+        } catch (e: Exception) {
+            Exceptions.throwIfFatal(e)
+            RxJavaPlugins.onError(CompositeException(error, e))
+        }
     }
 }

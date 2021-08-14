@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import com.ticketswap.assessment.R
-import com.ticketswap.assessment.spotify.ArtistItem
+import com.ticketswap.assessment.responses.ArtistItem
 
 class RecyclerAdapter(
     private val onItemClickListener: (ArtistItem) -> Unit

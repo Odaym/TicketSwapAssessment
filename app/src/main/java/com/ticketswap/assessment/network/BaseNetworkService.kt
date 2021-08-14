@@ -3,7 +3,6 @@ package com.ticketswap.assessment.network
 import com.ticketswap.assessment.PrefStore
 import io.reactivex.Single
 import kotlinx.serialization.KSerializer
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
 
 abstract class BaseNetworkService {
     abstract val processor: NetworkRequestProcessor

@@ -1,4 +1,4 @@
-package com.ticketswap.assessment.spotify
+package com.ticketswap.assessment.responses
 
 import android.os.Parcel
 import android.os.Parcelable
@@ -14,7 +14,7 @@ class Artists(
     val href: String,
     val items: List<ArtistItem>,
     val limit: Int,
-    val next: String,
+    val next: String?,
     val offset: Int,
     val previous: String?,
     val total: Int

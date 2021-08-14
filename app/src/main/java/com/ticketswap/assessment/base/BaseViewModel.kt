@@ -2,19 +2,20 @@ package com.ticketswap.assessment.base
 
 import androidx.lifecycle.ViewModel
 import com.ticketswap.assessment.util.CloseScreen
+import com.ticketswap.assessment.util.ResourcesProvider
 import com.ticketswap.assessment.util.ViewModelCommand
 import io.reactivex.Observable
+import io.reactivex.Scheduler
 import io.reactivex.Single
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
 
-abstract class BaseViewModel : ViewModel() {
-    private val ioScheduler = Schedulers.io()
-    private val uiScheduler = AndroidSchedulers.mainThread()
+abstract class BaseViewModel(dependencies: Dependencies) : ViewModel() {
+    private val ioScheduler = dependencies.ioScheduler
+    private val uiScheduler = dependencies.uiScheduler
+    protected val resourcesProvider = dependencies.resourceProvider
 
     private val subscriptions = CompositeDisposable()
 
@@ -44,4 +45,10 @@ abstract class BaseViewModel : ViewModel() {
     }
 
     fun onBackButtonClicked() = emitCommand(CloseScreen)
+
+    data class Dependencies(
+        val resourceProvider: ResourcesProvider,
+        val ioScheduler: Scheduler,
+        val uiScheduler: Scheduler
+    )
 }

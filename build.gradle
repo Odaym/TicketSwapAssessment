@@ -1,7 +1,7 @@
 buildscript {
     ext {
         kotlin_version = "1.5.21"
-        android_material = "1.4.0"
+        okhttp_version = "4.9.0"
     }
 
     repositories {

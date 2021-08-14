@@ -2,16 +2,19 @@ package com.ticketswap.assessment.ui.search
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.ticketswap.assessment.R
 import com.ticketswap.assessment.base.BaseViewModel
-import com.ticketswap.assessment.service.ApiService
-import com.ticketswap.assessment.spotify.ArtistItem
+import com.ticketswap.assessment.network.ApiService
+import com.ticketswap.assessment.responses.ArtistItem
 import com.ticketswap.assessment.util.NetworkAvailabilityChecker
 import com.ticketswap.assessment.util.OpenArtistDetailScreen
+import com.ticketswap.assessment.util.ShowErrorDialog
 
 class SearchViewModel(
+    dependencies: Dependencies,
     private val apiService: ApiService,
     private val networkChecker: NetworkAvailabilityChecker
-) : BaseViewModel() {
+) : BaseViewModel(dependencies) {
 
     private val _isRefreshing = MutableLiveData(false)
     val isRefreshing = _isRefreshing as LiveData<Boolean>
@@ -25,7 +28,7 @@ class SearchViewModel(
     private val _isProgressVisible = MutableLiveData(false)
     val isProgressVisible = _isProgressVisible as LiveData<Boolean>
 
-    private var searchQuery = ""
+    var searchQuery = ""
 
     fun onSearchQueryChanged(query: String) {
         searchQuery = query
@@ -54,10 +57,9 @@ class SearchViewModel(
                 }, {
                     _isHintVisible.value = true
                     _listItems.value = emptyList()
-
                 })
         } else {
-            // TODO show error dialog
+            emitCommand(ShowErrorDialog(resourcesProvider.getString(R.string.spotify_search_failed)))
         }
     }
 

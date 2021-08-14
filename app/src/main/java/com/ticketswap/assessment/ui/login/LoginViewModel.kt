@@ -1,37 +1,41 @@
 package com.ticketswap.assessment.ui.login
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import com.spotify.sdk.android.authentication.AuthenticationResponse
 import com.ticketswap.assessment.PrefStore
+import com.ticketswap.assessment.R
 import com.ticketswap.assessment.base.BaseViewModel
-import com.ticketswap.assessment.util.CloseScreen
-import com.ticketswap.assessment.util.NetworkAvailabilityChecker
-import com.ticketswap.assessment.util.OpenSearchScreen
+import com.ticketswap.assessment.util.*
 import org.koin.core.component.KoinComponent
 
 class LoginViewModel(
+    dependencies: Dependencies,
     private val prefStore: PrefStore,
     private val networkChecker: NetworkAvailabilityChecker
-) : BaseViewModel(), KoinComponent {
+) : BaseViewModel(dependencies), KoinComponent {
 
-    private val _isConnected = MutableLiveData(false)
-    val isConnected = _isConnected as LiveData<Boolean>
-
-    fun loginButtonClicked(){
-       if (networkChecker.isConnectedToInternet){
-          _isConnected.value = true
-       }else{
-           // TODO show error dialog
-       }
+    fun loginButtonClicked() {
+        if (networkChecker.isConnectedToInternet) {
+            emitCommand(LoginWithSpotify)
+        } else {
+            emitCommand(ShowErrorDialog(resourcesProvider.getString(R.string.offline_error)))
+        }
     }
 
-    fun authTokenReceived(accessToken: String?) {
+    fun spotifyResponseReceived(response: AuthenticationResponse) {
+        if (response.type == AuthenticationResponse.Type.ERROR) {
+            emitCommand(ShowErrorDialog(resourcesProvider.getString(R.string.spotify_login_failed)))
+        } else {
+            authTokenReceived(response.accessToken)
+        }
+    }
+
+    private fun authTokenReceived(accessToken: String?) {
         if (accessToken != null) {
             prefStore.setAuthToken(accessToken)
             emitCommand(OpenSearchScreen)
             emitCommand(CloseScreen)
         } else {
-            // TODO show error dialog
+            emitCommand(ShowErrorDialog(resourcesProvider.getString(R.string.spotify_auth_failed)))
         }
     }
 }

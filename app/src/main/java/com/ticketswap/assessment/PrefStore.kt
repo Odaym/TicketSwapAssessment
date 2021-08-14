@@ -3,28 +3,38 @@ package com.ticketswap.assessment
 import android.content.Context
 import android.content.SharedPreferences
 
-class PrefStore constructor(context: Context) {
+interface PrefStore {
+    fun setAuthToken(authToken: String)
+
+    fun getAuthToken(): String
+
+    fun removeAuthToken()
+
+    fun isLoggedIn(): Boolean
+}
+
+class PrefStoreImpl constructor(context: Context) : PrefStore {
 
     private val sharedPreferences: SharedPreferences =
         context.getSharedPreferences("shared preferences", 0)
 
-    fun setAuthToken(authToken: String) {
+    override fun setAuthToken(authToken: String) {
         sharedPreferences.edit()
             .putString("token", "Bearer $authToken")
             .apply()
     }
 
-    fun getAuthToken(): String {
+    override fun getAuthToken(): String {
         return sharedPreferences.getString("token", "") ?: ""
     }
 
-    fun removeAuthToken() {
+    override fun removeAuthToken() {
         sharedPreferences.edit()
             .remove("token")
             .apply()
     }
 
-    fun isLoggedIn(): Boolean {
+    override fun isLoggedIn(): Boolean {
         return sharedPreferences.getString("token", "") != ""
     }
 }

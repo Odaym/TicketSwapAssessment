@@ -7,12 +7,13 @@ import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ticketswap.assessment.base.BaseActivity
 import com.ticketswap.assessment.databinding.ActivitySearchBinding
+import com.ticketswap.assessment.ui.ErrorDialog
 import com.ticketswap.assessment.ui.artist.ArtistDetailActivity
 import com.ticketswap.assessment.util.OpenArtistDetailScreen
 import com.ticketswap.assessment.util.ViewModelCommand
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class SearchActivity : BaseActivity<SearchViewModel>() {
+class SearchActivity : BaseActivity<SearchViewModel>(), ErrorDialog.Listener {
 
     override val viewModel by viewModel<SearchViewModel>()
     private lateinit var binding: ActivitySearchBinding
@@ -30,10 +31,6 @@ class SearchActivity : BaseActivity<SearchViewModel>() {
             binding.swipeRefreshLayout.isRefreshing = it == true
         })
 
-        binding.swipeRefreshLayout.setOnRefreshListener {
-            viewModel.search()
-        }
-
         binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return true
@@ -45,6 +42,10 @@ class SearchActivity : BaseActivity<SearchViewModel>() {
             }
         })
 
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            viewModel.search()
+        }
+
         setupRecycler()
     }
 
@@ -54,6 +55,14 @@ class SearchActivity : BaseActivity<SearchViewModel>() {
             true
         }
         else -> super.handleViewModelCommand(command)
+    }
+
+    override fun onRetryClicked() {
+        viewModel.search()
+    }
+
+    override fun onCancelClicked(dialog: ErrorDialog) {
+        dialog.dismiss()
     }
 
     private fun setupRecycler() {

@@ -5,7 +5,9 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.ticketswap.assessment.ui.ErrorDialog
 import com.ticketswap.assessment.util.CloseScreen
+import com.ticketswap.assessment.util.ShowErrorDialog
 import com.ticketswap.assessment.util.ShowToast
 import com.ticketswap.assessment.util.ViewModelCommand
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -48,6 +50,8 @@ abstract class BaseActivity<VM : BaseViewModel> : AppCompatActivity() {
     open fun handleViewModelCommand(command: ViewModelCommand): Boolean {
         when (command) {
             is ShowToast -> Toast.makeText(this, command.message, Toast.LENGTH_LONG).show()
+            is ShowErrorDialog -> ErrorDialog.newInstance(command.message)
+                .show(supportFragmentManager, ErrorDialog::class.java.simpleName)
             is CloseScreen -> finish()
         }
 
