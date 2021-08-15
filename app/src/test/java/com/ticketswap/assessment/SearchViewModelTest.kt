@@ -46,11 +46,35 @@ class SearchViewModelTest {
         tested.onSearchQueryChanged(SEARCH_TERM)
 
         assertThat(tested.searchQuery).isEqualTo(SEARCH_TERM)
-        assertThat(tested.isHintVisible.value).isEqualTo(false)
+        assertThat(tested.emptyViewVisible.value).isEqualTo(false)
 
         verify(apiService).search(SEARCH_TERM)
 
         verifyDoFinallyBlock()
+    }
+
+    @Test
+    fun `does load items when search succeeds`() {
+        givenIsConnected()
+
+        givenSearchReturnsArtists()
+
+        tested.onSearchQueryChanged(SEARCH_TERM)
+
+        assertThat(tested.noResultsVisible.value).isEqualTo(false)
+        assertThat(tested.listItems.value).isEqualTo(searchResponse.artists.items)
+    }
+
+    @Test
+    fun `does show no-results view when no results are found`(){
+        givenIsConnected()
+
+        givenSearchReturnsEmptyResults ()
+
+        tested.onSearchQueryChanged(SEARCH_TERM)
+
+        assertThat(tested.noResultsVisible.value).isEqualTo(true)
+        assertThat(tested.listItems.value).isEqualTo(emptyList<ArtistItem>())
     }
 
     @Test
@@ -59,7 +83,7 @@ class SearchViewModelTest {
 
         tested.onSearchQueryChanged("")
 
-        assertThat(tested.isHintVisible.value).isEqualTo(true)
+        assertThat(tested.emptyViewVisible.value).isEqualTo(true)
         assertThat(tested.listItems.value).isEqualTo(emptyList<ArtistItem>())
 
         verifyZeroInteractions(apiService)
@@ -86,7 +110,7 @@ class SearchViewModelTest {
 
         verify(apiService).search(WRONG_SEARCH_TERM)
 
-        assertThat(tested.isHintVisible.value).isEqualTo(true)
+        assertThat(tested.emptyViewVisible.value).isEqualTo(true)
         assertThat(tested.listItems.value).isEqualTo(emptyList<ArtistItem>())
     }
 
@@ -118,6 +142,10 @@ class SearchViewModelTest {
         whenever((apiService).search(SEARCH_TERM)).thenReturn(Single.just(searchResponse))
     }
 
+    private fun givenSearchReturnsEmptyResults(){
+        whenever((apiService).search(SEARCH_TERM)).thenReturn(Single.just(emptySearchResponse))
+    }
+
     private fun givenSearchThrowsException() {
         whenever((apiService).search(WRONG_SEARCH_TERM)).thenReturn(Single.error(Exception()))
     }
@@ -131,7 +159,7 @@ class SearchViewModelTest {
     }
 
     private fun verifyDoFinallyBlock() {
-        assertThat(tested.isHintVisible.value).isEqualTo(false)
+        assertThat(tested.emptyViewVisible.value).isEqualTo(false)
         assertThat(tested.isProgressVisible.value).isEqualTo(false)
     }
 
@@ -153,6 +181,12 @@ class SearchViewModelTest {
     )
 
     private val searchResponse = SearchResponse(
+        Artists(
+            "href", listOf(artist), 4, "next aritst", 3, "prev", 59
+        )
+    )
+
+    private val emptySearchResponse = SearchResponse(
         Artists(
             "href", listOf(), 4, "next aritst", 3, "prev", 59
         )

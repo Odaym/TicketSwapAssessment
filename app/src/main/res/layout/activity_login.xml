@@ -12,14 +12,17 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fitsSystemWindows="true">
+        android:fitsSystemWindows="true"
+        android:padding="@dimen/space_xxlarge">
 
         <ImageView
             android:id="@+id/spotify_logo"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_spotify"
             app:layout_constraintBottom_toTopOf="@+id/button_login"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_chainStyle="packed" />
 
@@ -27,9 +30,13 @@
             android:id="@+id/button_login"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="48dp"
+            android:layout_marginTop="100dp"
+            android:background="@drawable/rounded_corner_button"
+            android:foreground="?android:selectableItemBackground"
             android:onClick="@{(_) -> viewModel.loginButtonClicked()}"
             android:text="@string/login"
+            android:textAppearance="@style/TSmall.Bold"
+            android:textColor="@android:color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/spotify_logo"
             app:layout_constraintVertical_chainStyle="packed" />

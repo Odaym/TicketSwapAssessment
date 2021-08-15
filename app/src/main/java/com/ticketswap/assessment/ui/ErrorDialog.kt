@@ -21,8 +21,6 @@ class ErrorDialog(private val errorMessage: String) : DialogFragment() {
         val errorText = view.findViewById<TextView>(R.id.dialog_message)
 
         with(view) {
-            isCancelable = false
-
             errorText.text = errorMessage
 
             positiveButton.setOnClickListener {

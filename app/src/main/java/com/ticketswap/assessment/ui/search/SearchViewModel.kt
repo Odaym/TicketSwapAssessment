@@ -22,8 +22,11 @@ class SearchViewModel(
     private val _listItems = MutableLiveData<List<ArtistItem>>()
     val listItems = _listItems as LiveData<List<ArtistItem>>
 
-    private val _isHintVisible = MutableLiveData(true)
-    val isHintVisible = _isHintVisible as LiveData<Boolean>
+    private val _emptyViewVisible = MutableLiveData(true)
+    val emptyViewVisible = _emptyViewVisible as LiveData<Boolean>
+
+    private val _noResultsVisible = MutableLiveData(false)
+    val noResultsVisible = _noResultsVisible as LiveData<Boolean>
 
     private val _isProgressVisible = MutableLiveData(false)
     val isProgressVisible = _isProgressVisible as LiveData<Boolean>
@@ -34,11 +37,11 @@ class SearchViewModel(
         searchQuery = query
 
         if (searchQuery.isNotEmpty()) {
-            _isHintVisible.value = false
+            _emptyViewVisible.value = false
 
             search()
         } else {
-            _isHintVisible.value = true
+            _emptyViewVisible.value = true
             _listItems.value = emptyList()
         }
     }
@@ -53,9 +56,10 @@ class SearchViewModel(
                     _isProgressVisible.postValue(false)
                 }
                 .viewModelSubscription({ searchResponse ->
+                    _noResultsVisible.postValue(searchResponse.artists.items.isEmpty())
                     _listItems.postValue(searchResponse.artists.items)
                 }, {
-                    _isHintVisible.value = true
+                    _emptyViewVisible.value = true
                     _listItems.value = emptyList()
                 })
         } else {
