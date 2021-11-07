@@ -23,7 +23,7 @@ We want the app to consist of the following parts:
 - If no network is available when a request is due, the app should park the call and perform it as soon as network is back.
 
 ### UI
-- You can decide on your own how will the app look, if you need a guide, feel free to look at the TicketSwap app as an example.
+- You can decide on your own how will the app look, if you need a guide, feel free to look at the sample app as an example.
 
 ### Third party libraries
 - We have implemented the HTTP requests using Retrofit, but we would like to see how you would solve this without using any such library. So OkHttp and some JSON parsing library is ok but nothing more.
